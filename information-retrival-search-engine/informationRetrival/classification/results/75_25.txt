@@ -1,0 +1,219 @@
+MODEL      :  SVM
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  80/100
+Romance    :  98/100
+Crime      :  87/100
+Precision  :  0.90815
+Recall     :  0.88333
+F(1) Score :  0.89557
+F(W) Score :  0.88532
+Accuracy   :  0.88333
+_______________________
+MODEL      :  SVM
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  76/100
+Romance    :  94/100
+Crime      :  82/100
+Precision  :  0.86325
+Recall     :  0.84000
+F(1) Score :  0.85147
+F(W) Score :  0.84136
+Accuracy   :  0.84000
+_______________________
+MODEL      :  LOGISTIC REGRESSION
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  78/100
+Romance    :  98/100
+Crime      :  86/100
+Precision  :  0.89720
+Recall     :  0.87333
+F(1) Score :  0.88511
+F(W) Score :  0.87450
+Accuracy   :  0.87333
+_______________________
+MODEL      :  LOGISTIC REGRESSION
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  46/100
+Romance    :  93/100
+Crime      :  79/100
+Precision  :  0.79453
+Recall     :  0.72667
+F(1) Score :  0.75908
+F(W) Score :  0.71673
+Accuracy   :  0.72667
+_______________________
+MODEL      :  GAUSSIAN NB
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  80/100
+Romance    :  91/100
+Crime      :  100/100
+Precision  :  0.91018
+Recall     :  0.90333
+F(1) Score :  0.90674
+F(W) Score :  0.90269
+Accuracy   :  0.90333
+_______________________
+MODEL      :  GAUSSIAN NB
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  79/100
+Romance    :  91/100
+Crime      :  100/100
+Precision  :  0.90763
+Recall     :  0.90000
+F(1) Score :  0.90380
+F(W) Score :  0.89925
+Accuracy   :  0.90000
+_______________________
+MODEL      :  MULTINOMIAL NB
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  71/100
+Romance    :  95/100
+Crime      :  81/100
+Precision  :  0.85014
+Recall     :  0.82333
+F(1) Score :  0.83652
+F(W) Score :  0.82346
+Accuracy   :  0.82333
+_______________________
+MODEL      :  MULTINOMIAL NB
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  1/100
+Romance    :  98/100
+Crime      :  65/100
+Precision  :  0.76403
+Recall     :  0.54667
+F(1) Score :  0.63733
+F(W) Score :  0.45465
+Accuracy   :  0.54667
+_______________________
+MODEL      :  BERNOULLI NB
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  10/100
+Romance    :  98/100
+Crime      :  70/100
+Precision  :  0.75931
+Recall     :  0.59333
+F(1) Score :  0.66614
+F(W) Score :  0.52503
+Accuracy   :  0.59333
+_______________________
+MODEL      :  BERNOULLI NB
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  10/100
+Romance    :  98/100
+Crime      :  70/100
+Precision  :  0.75931
+Recall     :  0.59333
+F(1) Score :  0.66614
+F(W) Score :  0.52503
+Accuracy   :  0.59333
+_______________________
+MODEL      :  RANDOM FOREST
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  78/100
+Romance    :  98/100
+Crime      :  85/100
+Precision  :  0.90017
+Recall     :  0.87000
+F(1) Score :  0.88483
+F(W) Score :  0.87238
+Accuracy   :  0.87000
+_______________________
+MODEL      :  RANDOM FOREST
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  78/100
+Romance    :  98/100
+Crime      :  83/100
+Precision  :  0.88683
+Recall     :  0.86333
+F(1) Score :  0.87492
+F(W) Score :  0.86411
+Accuracy   :  0.86333
+_______________________
+MODEL      :  BAGGING
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  77/100
+Romance    :  97/100
+Crime      :  86/100
+Precision  :  0.89123
+Recall     :  0.86667
+F(1) Score :  0.87878
+F(W) Score :  0.86800
+Accuracy   :  0.86667
+_______________________
+MODEL      :  BAGGING
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  42/100
+Romance    :  93/100
+Crime      :  76/100
+Precision  :  0.78321
+Recall     :  0.70333
+F(1) Score :  0.74113
+F(W) Score :  0.69102
+Accuracy   :  0.70333
+_______________________
+MODEL      :  GRADIENT
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  50/100
+Romance    :  92/100
+Crime      :  61/100
+Precision  :  0.76098
+Recall     :  0.67667
+F(1) Score :  0.71635
+F(W) Score :  0.67361
+Accuracy   :  0.67667
+_______________________
+MODEL      :  GRADIENT
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  52/100
+Romance    :  91/100
+Crime      :  59/100
+Precision  :  0.74802
+Recall     :  0.67333
+F(1) Score :  0.70872
+F(W) Score :  0.67055
+Accuracy   :  0.67333
+_______________________
+MODEL      :  Voting
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  77/100
+Romance    :  98/100
+Crime      :  86/100
+Precision  :  0.89878
+Recall     :  0.87000
+F(1) Score :  0.88415
+F(W) Score :  0.87190
+Accuracy   :  0.87000
+_______________________
+MODEL      :  Voting
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  55/100
+Romance    :  93/100
+Crime      :  81/100
+Precision  :  0.81762
+Recall     :  0.76333
+F(1) Score :  0.78954
+F(W) Score :  0.75975
+Accuracy   :  0.76333
+_______________________
+MODEL      :  Voting With Weights
+VECTORIZER :  COUNT VECTORIZER
+Horror     :  78/100
+Romance    :  98/100
+Crime      :  87/100
+Precision  :  0.90093
+Recall     :  0.87667
+F(1) Score :  0.88863
+F(W) Score :  0.87803
+Accuracy   :  0.87667
+_______________________
+MODEL      :  Voting With Weights
+VECTORIZER :  TFIDF VECTORIZER
+Horror     :  77/100
+Romance    :  97/100
+Crime      :  86/100
+Precision  :  0.88366
+Recall     :  0.86667
+F(1) Score :  0.87508
+F(W) Score :  0.86657
+Accuracy   :  0.86667

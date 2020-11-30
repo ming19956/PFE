@@ -1,0 +1,45 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+{% block content %}
+<div class="main-search">
+  <h1>Classify A Movie</h1>
+  <form method="POST" action="">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="{{ form.classify_plot.id_for_label }}"> Enter your movie plot to classify :</label> <br/>
+      {{ form.classify_plot }}
+    </div>
+    <button class="btn btn-success" type="submit" value="Search">Classify</button>
+  </form>
+  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+    View Test Classification Statistics
+  </button>
+</div>
+{% if genre %}
+    <div class="classification-result">
+      <div class="modal-body">
+        <h4>Given plot was classifed as <b>{{genre}}</b> in {{time}}</h4>
+      </div>
+    </div>
+{% endif %}
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content" style="width: 800px">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Classification Statistics for Test Data</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{results|safe}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+{% block content %}
+  <div class="main-search">
+    <h1>Discover A Movie</h1>
+    <form action="/?">
+        {{ form }}
+        <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Search</button>
+    </form>
+  </div>
+
+  {% if error %}
+  <div class="error-block">
+    <h4>{{ message }}</h4>
+  </div>
+  {% endif %}
+
+  {% block crawl %} {% endblock crawl%}
+  {% if correction %}
+  <div class="suggested-corrections">
+    <h4>Did you mean <a href="/?search_text={{suggested}}{% for field in search_field %}&search_field={{field}}{% endfor %}">{{suggested}}</a>?</h4>
+  </div>
+  {% endif %}
+
+  {% if hits %}
+  <div class="time-taken">
+    <h5>{{number}} results found in {{elapsed}} seconds</h5>
+  </div>
+  <div class="row">
+  <div class="search-filters col-lg-3">
+    <form action="">
+      <input type="hidden" value="{{ search_text }}" name="search_text">
+      {% for field in search_field %}
+      <input type="hidden" value="{{ field }}" name="search_field">
+      {% endfor %}
+      Filter by year interval:<br/>
+      <b>1970</b>
+      <input id="year-slider" type="text" class="span2" name="year" value=""
+       data-slider-min="1970" data-slider-max="2017" data-slider-step="2"
+       data-slider-value="[{{ year }}]"/>
+      <b>2017</b>
+      <br/>
+      Filter by Rating: <br/>
+      <b>0</b>
+      <input id="rating-slider" type="text" class="span2" name="rating" value=""
+       data-slider-min="0" data-slider-max="10" data-slider-step="1"
+       data-slider-value="[{{ rating }}]"/>
+      <b>10</b>
+      <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Refine </button>
+    </form>
+  </div>
+  <div class="col-lg-9">
+    {% for hit in hits %}
+    <div class="search-result-item">
+      <div class="row">
+        <div class="col-xs-2">
+          <img alt="Poster not available" src="http://image.tmdb.org/t/p/w780/{{hit.poster_path}}" height="200px">
+        </div>
+        <div class="col-xs-9">
+          <form action="/show" method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="{{hit.title}}" name="title">
+            <input type="hidden" value="{{hit.overview}}" name="overview">
+            <input type="hidden" value="{{hit.poster_path}}" name="poster_path">
+            <input type="hidden" value="{{hit.imdb_id}}" name="imdb_id">
+          <h3 class="hit-title"><input type="submit" class="movie-title" value="{{ hit.title }}" ></h3>
+          </form>
+          <div class="row">
+            <div class="col-xs-2">
+              <h5 class="hit-voting"><b>Ratings: </b>{{ hit.vote_average }} </h5>
+            </div>
+            <div class="col-xs-7">
+              <h5 class="hit-release_date"><b>Release date: </b>{{ hit.release_date }} </h5>
+            </div>
+          </div>
+          <p class="hit-overview">{{ hit.overview }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <!--<nav align="center" aria-label="Page navigation">-->
+    <!--<ul class="pagination">-->
+      <!--{% if page == 1 %}-->
+        <!--<li>-->
+        <!--<a class="disabled" aria-label="Previous">-->
+          <!--<span aria-hidden="true">&laquo;</span>-->
+        <!--</a>-->
+      <!--</li>-->
+      <!--{% else %}-->
+      <!--<li>-->
+        <!--<a href="/1" aria-label="Previous">-->
+          <!--<span aria-hidden="true">&laquo;</span>-->
+        <!--</a>-->
+      <!--</li>-->
+      <!--{% endif %}-->
+      <!--{% for i in page_count %}-->
+      <!--{% if page == i %}-->
+      <!--<li><a class="active">{{ i }} </a></li>-->
+      <!--{% else %}-->
+      <!--<li><a href="?page={{ i }}">{{ i }} </a></li>-->
+      <!--{% endif %}-->
+      <!--{% if islast %}-->
+      <!--<li>-->
+        <!--<a href="/1" aria-label="Next">-->
+          <!--<span aria-hidden="true">&raquo;</span>-->
+        <!--</a>-->
+      <!--</li>-->
+      <!--{% endif %}-->
+      <!--{% endfor %}-->
+    </ul>
+    </nav>
+    </div>
+  </div>
+{% endif %}
+{% if  number == 0 or correction %}
+<div class="time-taken">
+  <form action="/crawl">
+    {% for field in search_field %}
+    <input type="hidden" value="{{ field }}" name="search_field">
+    {% endfor %}
+    <input type="hidden" value="{{ search_text }}" name="search_text">
+    <h5>Sorry could not find anything...<input type="submit" class="suggested-spelling" value="crawl" ></h5>
+  </form>
+</div>
+{% endif %}
+{% endblock content %}
+
+
