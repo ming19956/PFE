@@ -1,8 +1,11 @@
+# coding=utf-8
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 import string, os
+from string import maketrans
 import re
+import numpy as np
 from classification.lemmatization import lemmatization
 import pickle
 import time
@@ -18,7 +21,9 @@ from sklearn.metrics import confusion_matrix
 from sklearn.externals import joblib
 from sklearn import feature_extraction
 from pymongo import MongoClient
-
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 
 
@@ -33,16 +38,25 @@ class Classification(object):
         
         lem = lemmatization()
         #Get Mongo client
-        client = MongoClient()
-        db = client['IR']
-        collection = db['Movies']
+        # client = MongoClient()
+        # db = client['IR']
+        # collection = db['Movies']
+
+        host = '127.0.0.1'  # or localhost
+        port = 27017
+        client = MongoClient(host, port)
+        # 创建数据库dialog
+        db = client.allMovies
+        # 创建集合scene
+        collection = db.Movie
+        #print(collection.find_one({"content.genres.name":"Drama"}))
 
         #Path to folder to store trained data set
         path=self.path
         #Queries to get 500 horror, romance and crime movies
-        qr1=collection.find({"genre.name":"Horror"}).limit(500)
-        qr2=collection.find({"genre.name":"Romance"}).limit(500)
-        qr3=collection.find({"genre.name":"Crime"}).limit(500)
+        qr1=collection.find({"content.genres.name":"Drama"}).limit(500)
+        qr2=collection.find({"content.genres.name":"Romance"}).limit(500)
+        qr3=collection.find({"content.genres.name":"Crime"}).limit(500)
 
         #Combine queries
         query_results=[]
@@ -52,7 +66,7 @@ class Classification(object):
             query_results.append(rec)
         for rec in qr3:
             query_results.append(rec)
-
+        print(query_results)
         #Dictionary to store the terms appearing in the genres
         dictionary = []
 
@@ -64,18 +78,20 @@ class Classification(object):
         #Document ids of records to be trained
         doc_ids = []
         for movie in query_results:
-        
-            training_data.append(movie['overview'])
+            training_data.append(movie['content']['overview'])
             doc_ids.append(movie['_id'])
             
-            for genre in movie['genre']:
-                if ((genre['name']=='Horror') or (genre['name']=='Romance') or (genre['name']=='Crime')):
+            for genre in movie['content']['genres']:
+                if ((genre['name']=='Drama') or (genre['name']=='Romance') or (genre['name']=='Crime')):
                    categories.append(genre['name'])
                    break
                 
             #Convert to lower case and remove stop words from overview
-            dict_rec = movie['overview'].lower()
-            dict_rec = dict_rec.translate(string.punctuation)
+            dict_rec = movie['content']['overview'].lower()
+            #table = maketrans(string.punctuation, " ")
+            for s in string.punctuation:
+                dict_rec = dict_rec.replace(s, "")
+            #dict_rec = str(dict_rec).translate(string.punctuation)
             dict_rec = lem.removeStopWords(dict_rec.split(" "))
 
             #Add to dictionary
@@ -132,6 +148,8 @@ class Classification(object):
                 mod = model_list[model]
                 vector = vec_list[vec]
                 X = vector.fit_transform(training_data).toarray()
+                print(np.shape(X))
+                print (np.shape(categories))
                 mod.fit(X, categories)
                 
                 #Store in a file
@@ -150,9 +168,16 @@ class Classification(object):
         lem = lemmatization()
 
         #Get Mongo Client
-        client = MongoClient()
-        db = client['IR']
-        collection = db['Movies']
+        # client = MongoClient()
+        # db = client['IR']
+        # collection = db['Movies']
+        host = '127.0.0.1'  # or localhost
+        port = 27017
+        client = MongoClient(host, port)
+        # 创建数据库dialog
+        db = client.allMovies
+        # 创建集合scene
+        collection = db.Movie
 
         #Path to folder containing the training model files
         path=self.path
@@ -163,10 +188,11 @@ class Classification(object):
         trained_docs=pickle.load(myfile)
 
         #Mongo queries to retrieve Horror, Romance and Crime movies
-        qr1=collection.find({"genre.name":"Horror"})
-        qr2=collection.find({"genre.name":"Romance"})
-        qr3=collection.find({"genre.name":"Crime"})
-        
+        qr1 = collection.find({"content.genres.name": "Drama"})
+        qr2 = collection.find({"content.genres.name": "Romance"})
+        qr3 = collection.find({"content.genres.name": "Crime"})
+
+        print (qr1)
         #Get 100 Horror, Romance and Crime movies each, which are not in the trained data set
         
         horr=[]
@@ -216,9 +242,9 @@ class Classification(object):
         categories = []
         
         for movie in query_results:
-            test_data.append(movie['overview'])
-            for genre in movie['genre']:
-                if ((genre['name']=='Horror') or (genre['name']=='Romance') or (genre['name']=='Crime')):
+            test_data.append(movie['content']['overview'])
+            for genre in movie['content']['genres']:
+                if ((genre['name']=='Drama') or (genre['name']=='Romance') or (genre['name']=='Crime')):
                    categories.append(genre['name'])
                    break
 
@@ -353,7 +379,8 @@ class Classification(object):
         """
         try:
             path=self.path
-            results = joblib.load(path + "classification_results.txt")
+            print(path + "/classification_results.txt")
+            results = joblib.load(path + "/classification_results.txt")
             return results
         
         #Call Classify_Data() if results are not found
@@ -366,9 +393,9 @@ class Classification(object):
 
 
 
-#path='/mnt/d/model_files_new_with_voting_with_weights/'
-#c = Classification(path)
+path='/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
+c = Classification(path)
 #c.Train()
 #c.Classify_Data()
-#c.Classify_Text("An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.")
-#print c.get_classification_results()
+c.Classify_Text("An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.")
+print c.get_classification_results()

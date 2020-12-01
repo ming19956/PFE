@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.shortcuts import render
 from .forms import SearchForm, ClassifyForm
 from whoosh.qparser import MultifieldParser, QueryParser
@@ -15,7 +16,7 @@ from django.templatetags.static import static
 
 INDEX_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/Index_tmp'
 WRITE_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/Trial_2'
-CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification'
+CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
 
 def show(request):
     if request.method == 'POST':
@@ -34,7 +35,8 @@ def index(request):
     if request.method == 'GET':
         form = SearchForm(request.GET)
         if form.is_valid():
-            search_field = form.cleaned_data['search_field']
+            search_field = form.cleaned_data['search_field'] ## 要么改ui，要么做默认
+            print(form.cleaned_data['search_field'])
             query = form.cleaned_data['search_text']
             rating = request.GET.get("rating")
             year = request.GET.get("year")
@@ -54,7 +56,6 @@ def index(request):
                     rating = "2,8"
                 try:
                     qry = parser.parse(query)
-
                 except:
                     qry = None
                     return render(request, 'frontend/index.html', {'error': True, 'message':"Query is null!", 'form':form})
