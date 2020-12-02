@@ -86,8 +86,8 @@ def index(request):
                     elapsed_time = "{0:.3f}".format(elapsed_time)
                     return render(request, 'frontend/index.html', {'search_field': search_field, 'search_text': form.cleaned_data['search_text'],
                                                                    'error': False, 'hits': hits, 'form':form, 'elapsed': elapsed_time,
-                                                                   'number': len(hits), 'year': year, 'rating': rating, 'multi_genre': genre_list,
-                                                                   'checked_list':checked_list})
+                                                                   'number': len(hits), 'year': year, 'rating': rating, 'multi_genre': genre_list
+                                                                    })
                 else:
                     return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'form':form})
             else:
