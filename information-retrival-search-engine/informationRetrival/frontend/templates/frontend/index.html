@@ -38,9 +38,9 @@
       <b>1970</b>
 
       <input id="year-slider" type="text" class="span2" style="width:70%" name="year" value=""
-                                              data-slider-min="1970" data-slider-max="2017" data-slider-step="2"
+                                              data-slider-min="1970" data-slider-max="2020" data-slider-step="2"
                                               data-slider-value="[{{ year }}]"/>
-      <b>2017</b>
+      <b>2020</b>
       <br/>
       <br/>
 
@@ -54,37 +54,39 @@
       <br/>
       <label for="multi_genre">Filter by genres: </label><br/>
         <div id="multi_genre">
-        <input id="Comedy" type="checkbox" value="Comedy" name="multi_genre">
+        <input id="Comedy" type="checkbox" value="Comedy" name="multi_genre" />
         <label for="Comedy">Comedy </label>
-        <input id="Drama" type="checkbox" value="Drama" name="multi_genre"/>
+        <input id="Drama" type="checkbox" value="Drama" name="multi_genre" />
         <label for="Drama">Drama </label>
-        <input id="Horror" type="checkbox" value="Horror" name="multi_genre"/>
+        <input id="Horror" type="checkbox" value="Horror" name="multi_genre" />
         <label for="Horror">Horror </label>
         <br/>
-        <input id="Science Fiction" type="checkbox" value="Science Fiction" name="multi_genre"/>
+        <input id="Science Fiction" type="checkbox" value="Science Fiction" name="multi_genre" />
         <label for="Science Fiction">Science Fiction </label>
-        <input id="War" type="checkbox" value="War" name="multi_genre"/>
+        <input id="War" type="checkbox" value="War" name="multi_genre" />
         <label for="War">War </label>
           <br/>
-        <input id="Documentary" type="checkbox" value="Documentary" name="multi_genre"/>
+        <input id="Documentary" type="checkbox" value="Documentary" name="multi_genre" />
         <label for="Documentary">Documentary </label>
-        <input id="Action" type="checkbox" value="Action" name="multi_genre"/>
+        <input id="Action" type="checkbox" value="Action" name="multi_genre" />
         <label for="Action">Action </label>
-        <input id="Thriller" type="checkbox" value="Thriller" name="multi_genre"/>
+        <input id="Thriller" type="checkbox" value="Thriller" name="multi_genre" />
         <label for="Thriller">Thriller </label>
-        <input id="Crime" type="checkbox" value="Crime" name="multi_genre"/>
+        <input id="Crime" type="checkbox" value="Crime" name="multi_genre" />
         <label for="Crime">Crime </label>
-        <input id="Romance" type="checkbox" value="Romance" name="multi_genre"/>
+        <input id="Romance" type="checkbox" value="Romance" name="multi_genre" />
         <label for="Romance">Romance</label>
-        <input id="History" type="checkbox" value="History" name="multi_genre"/>
+        <input id="History" type="checkbox" value="History" name="multi_genre" />
         <label for="History">History</label>
            <br/>
-        <input id="Others" type="checkbox" value="Others" name="multi_genre"/>
+        <input id="Others" type="checkbox" value="Others" name="multi_genre" />
         <label for="Others">Others</label>
       </div>
       <br/>
       <br/>
       <div>
+        [{{ year }}]
+        [{{ rating }}]
         [{{multi_genre}}]
       </div>
       <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Refine </button>
@@ -100,7 +102,7 @@
         <div class="col-xs-9">
           <form action="/show" method="POST">
             {% csrf_token %}
-            <input type="hidden" value="{{hit.title}}" name="title">
+            <input type="hidden" value="{{hit.title}}" name="title"><span>{{hit.genres}}</span>
             <input type="hidden" value="{{hit.overview}}" name="overview">
             <input type="hidden" value="{{hit.poster_path}}" name="poster_path">
             <input type="hidden" value="{{hit.imdb_id}}" name="imdb_id">
@@ -119,35 +121,7 @@
       </div>
     </div>
     {% endfor %}
-    <!--<nav align="center" aria-label="Page navigation">-->
-    <!--<ul class="pagination">-->
-      <!--{% if page == 1 %}-->
-        <!--<li>-->
-        <!--<a class="disabled" aria-label="Previous">-->
-          <!--<span aria-hidden="true">&laquo;</span>-->
-        <!--</a>-->
-      <!--</li>-->
-      <!--{% else %}-->
-      <!--<li>-->
-        <!--<a href="/1" aria-label="Previous">-->
-          <!--<span aria-hidden="true">&laquo;</span>-->
-        <!--</a>-->
-      <!--</li>-->
-      <!--{% endif %}-->
-      <!--{% for i in page_count %}-->
-      <!--{% if page == i %}-->
-      <!--<li><a class="active">{{ i }} </a></li>-->
-      <!--{% else %}-->
-      <!--<li><a href="?page={{ i }}">{{ i }} </a></li>-->
-      <!--{% endif %}-->
-      <!--{% if islast %}-->
-      <!--<li>-->
-        <!--<a href="/1" aria-label="Next">-->
-          <!--<span aria-hidden="true">&raquo;</span>-->
-        <!--</a>-->
-      <!--</li>-->
-      <!--{% endif %}-->
-      <!--{% endfor %}-->
+
     </ul>
     </nav>
     </div>

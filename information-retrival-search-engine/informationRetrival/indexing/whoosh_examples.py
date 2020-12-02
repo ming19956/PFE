@@ -113,39 +113,5 @@ for i in all_file:
 writer.commit()
 print("done ##################################################################################")
 
-# qstring="crime"
-# qp = QueryParser("genres", schema=ix.schema, termclass=query.Variations)
-# q = qp.parse(qstring)
-# mistyped_words = []
-#
-# start = time.time()
-# with ix.searcher(weighting=scoring.TF_IDF()) as s:
-#     corrected = s.correct_query(q, qstring)
-#     if corrected.query != q:
-#         print("Did you mean:", corrected.string)
-#     for word in qstring.split(" "):
-#         if word not in corrected.string:
-#             mistyped_words.append(word)
-#     print (mistyped_words)
-#     corrector = s.corrector("genres")
-#     for mistyped_word in mistyped_words:
-#         lis=corrector.suggest(mistyped_word, limit=3)
-#         print lis
-#         q = qp.parse(corrected.string)
-#     results = s.search(q)
-#     print (len(results))
-#     print (list(results))
-#     counter = 0
-#     for hit in results:
-#         print hit['title']
-#         counter += 1
-#         if counter == 10:
-#             break
-#     # print ((list(s.lexicon("overview"))))
-#     # print (len(list(s.lexicon("title"))))
-#     # print (len(list(s.lexicon("tagline"))))
-#     # print (len(list(s.lexicon("production_companies"))))
-#     # print (len(list(s.lexicon("genres"))))
-# end = time.time()
-# print ("Total time:"+str((end-start)*1000))
+
 
