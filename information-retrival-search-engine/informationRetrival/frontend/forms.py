@@ -1,6 +1,7 @@
 from django import forms
 FIELD_CHOICES = [('title','Movie Title'),
-                 ('overview', 'Movie Overview')]
+                 ('overview', 'Movie Overview'),
+                 ('actor','Movie Actor')]
 class SearchForm(forms.Form):
     search_field = forms.MultipleChoiceField(
         required=True,

@@ -13,10 +13,9 @@ from classification.classify import Classification
 from sklearn.externals import joblib
 from django.templatetags.static import static
 
-INDEX_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/Index_tmp'
-WRITE_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/Trial_2'
-CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification'
-
+INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp'
+WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
+CLASSIFICATION_PATH = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/classification'
 def show(request):
     if request.method == 'POST':
         overview = request.POST.get('overview')
@@ -38,6 +37,10 @@ def index(request):
             query = form.cleaned_data['search_text']
             rating = request.GET.get("rating")
             year = request.GET.get("year")
+
+            genre_list = request.GET.getlist('multi_genre')
+
+
             query = query.replace('+', ' AND ').replace('-', ' NOT ')
             filter_q = None
             # TODO: Change Directory here
@@ -48,6 +51,11 @@ def index(request):
                 if year is not None and rating is not None:
                     date_q = QRY.DateRange("release_date", datetime.strptime(year.split(",")[0], "%Y"), datetime.strptime(year.split(",")[1], "%Y"))
                     rating_q = QRY.NumericRange("vote_average",int(rating.split(",")[0]), int(rating.split(",")[1]))
+                    # genres_q= QRY.Or(QRY.Regex("genres",genre_list[0]),QRY.Regex("genres",genre_list[1]))
+                    # all_parents = QRY.Term("kine", "class")
+                    # wanted_kids= QRY.Term("name","name")
+                    # children=QRY.NestedChildren(all_parents,wanted_kids)
+                    # genres_q=QRY.Regex(children,"Comedy")
                     filter_q = QRY.Require(date_q, rating_q)
                 else:
                     year = "1970,2017"
@@ -68,7 +76,8 @@ def index(request):
                     elapsed_time = "{0:.3f}".format(elapsed_time)
                     return render(request, 'frontend/index.html', {'search_field': search_field, 'search_text': form.cleaned_data['search_text'], \
                                                                    'error': False, 'hits': hits, 'form':form, 'elapsed': elapsed_time,\
-                                                                   'number': len(hits), 'year': year, 'rating': rating})
+                                                                   'number': len(hits), 'year': year, 'rating': rating,
+                                                                   'multi_genre':genre_list})
                 else:
                     return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'form':form})
             else:
