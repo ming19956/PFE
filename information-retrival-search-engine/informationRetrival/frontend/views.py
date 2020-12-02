@@ -13,9 +13,9 @@ from classification.classify import Classification
 from sklearn.externals import joblib
 from django.templatetags.static import static
 
-INDEX_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/Index_tmp'
-WRITE_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/Trial_2'
-CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification'
+INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp'
+WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
+CLASSIFICATION_PATH = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/classification'
 
 def show(request):
     if request.method == 'POST':
@@ -77,7 +77,7 @@ def index(request):
                     elapsed_time = "{0:.3f}".format(elapsed_time)
                     return render(request, 'frontend/index.html', {'search_field': search_field, 'search_text': form.cleaned_data['search_text'], \
                                                                    'error': False, 'hits': hits, 'form':form, 'elapsed': elapsed_time,\
-                                                                   'number': len(hits), 'year': year, 'rating': rating})
+                                                                   'number': len(hits), 'year': year, 'rating': rating, 'multi_genre': genre_list})
                 else:
                     return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'form':form})
             else:

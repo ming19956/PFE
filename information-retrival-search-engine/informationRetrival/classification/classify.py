@@ -393,9 +393,9 @@ class Classification(object):
 
 
 
-path='/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
-c = Classification(path)
+# path='/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
+# c = Classification(path)
 #c.Train()
 #c.Classify_Data()
-c.Classify_Text("An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.")
-print c.get_classification_results()
+# c.Classify_Text("An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.")
+# print c.get_classification_results()
