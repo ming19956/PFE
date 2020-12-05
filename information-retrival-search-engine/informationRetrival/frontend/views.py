@@ -55,8 +55,11 @@ def index(request):
                     rating_q = QRY.NumericRange("vote_average",int(rating.split(",")[0]), int(rating.split(",")[1]))
 
                     if len(genre_list)>0:
-                        genres_q=QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
-                        combi_q = QRY.And([rating_q, genres_q])
+                        genres_q1= QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
+                        # genres_q2 = QRY.Or([QRY.Term(u"genres", unicode(x.capitalize())) for x in genre_list])
+                        # genres_q= QRY.Or(genres_q1,genres_q2)
+                        combi_q = QRY.And([rating_q, genres_q1])
+                        combi = QRY.Regex(u"genres",unicode("[.]*science"))
                         filter_q = QRY.Require(date_q, combi_q)
                     else:
                         filter_q = QRY.Require(date_q, rating_q)
@@ -65,8 +68,8 @@ def index(request):
                     print(filter_q)
 
                 else:
-                    year = "1970,2020"
-                    rating = "2,10"
+                    year = "1900,2020"
+                    rating = "-1,10"
 
                 try:
                     qry = parser.parse(query)
@@ -86,8 +89,7 @@ def index(request):
                     elapsed_time = "{0:.3f}".format(elapsed_time)
                     return render(request, 'frontend/index.html', {'search_field': search_field, 'search_text': form.cleaned_data['search_text'],
                                                                    'error': False, 'hits': hits, 'form':form, 'elapsed': elapsed_time,
-                                                                   'number': len(hits), 'year': year, 'rating': rating, 'multi_genre': genre_list,
-                                                                   'checked_list':checked_list})
+                                                                   'number': len(hits), 'year': year, 'rating': rating, 'multi_genre': genre_list})
                 else:
                     return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'form':form})
             else:
