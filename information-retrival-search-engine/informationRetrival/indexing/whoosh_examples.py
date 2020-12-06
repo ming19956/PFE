@@ -1,4 +1,5 @@
 # coding=utf-8
+import importlib
 import os
 import ast
 from MovieData import MovieData
@@ -6,11 +7,11 @@ from whoosh.fields import Schema, TEXT, KEYWORD, ID, STORED, DATETIME, NUMERIC, 
 from whoosh.analysis import StemmingAnalyzer
 from whoosh.qparser import QueryParser
 from whoosh import index, query
+from numpy import unicode
 from whoosh import scoring
 import json
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+importlib.reload(sys)
 def unicode_convert(input):
     if isinstance(input, dict):
         return {unicode_convert(key): unicode_convert(value) for key, value in input.iteritems()}
@@ -21,8 +22,8 @@ def unicode_convert(input):
     else:
         return input
 
-BASE_PATH="/Users/panda/Desktop/movie_1202" # json文件地址
-FILEPATH="../../../Index_tmp" # whoosh index索引地址
+BASE_PATH="/Users/liujiazhen/Documents/2020-2021/PFE/data/movie_1202" # json文件地址
+FILEPATH="/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp"
 #Schema for Movie data
 #Stored= True corresponds to all items that require to be returned with the search result
 schema = Schema(overview=TEXT(analyzer=StemmingAnalyzer(), spelling=True, stored=True),

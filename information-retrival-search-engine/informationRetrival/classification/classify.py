@@ -1,9 +1,10 @@
 # coding=utf-8
+import importlib
+
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 import string, os
-from string import maketrans
 import re
 import numpy as np
 from classification.lemmatization import lemmatization
@@ -23,8 +24,7 @@ from sklearn import feature_extraction
 from pymongo import MongoClient
 from collections import Counter
 import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
+importlib.reload(sys)
 
 
 

@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from textblob import TextBlob
-from unidecode import unidecode
+from numpy import unicode
 
 filenames=[]
 for filename in glob.glob('../*.txt'):

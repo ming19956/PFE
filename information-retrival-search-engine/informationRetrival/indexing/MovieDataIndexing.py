@@ -1,10 +1,11 @@
-# Python 2.7 version available
+
 import os
 import argparse
 from indexing.MovieData import MovieData
 from whoosh.fields import Schema, TEXT, ID, STORED, DATETIME, NUMERIC, BOOLEAN
 from whoosh.analysis import StemmingAnalyzer
 from whoosh import index
+from numpy import unicode
 
 LIST_OF_FIELDS = ["overview", "tagline", "title", "runtime", "poster_path", "genres",
                 "production_companies", "release_date", "imdb_id", "popularity", "revenue", "vote_average", "adult"]

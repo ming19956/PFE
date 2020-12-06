@@ -10,11 +10,12 @@ import os
 from datetime import datetime
 from indexing.crawl import crawl_and_update
 from classification.classify import Classification
+from numpy import unicode
 from sklearn.externals import joblib
 from django.templatetags.static import static
 
-INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp'
-WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
+INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE3.7/PFE-pfe/Index_tmp'
+WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE3.7/PFE-pfe/Trial_2'
 CLASSIFICATION_PATH = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/classification'
 
 def show(request):

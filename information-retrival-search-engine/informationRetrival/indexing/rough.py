@@ -1,4 +1,4 @@
-# Python 2.7 version available
+from numpy import unicode
 import os
 import argparse
 from MovieData import MovieData

@@ -1,6 +1,7 @@
 # coding=utf-8
 import ast
 import json
+from numpy import unicode
 # a = ast.literal_eval('{"genres":[{"id":35,"name":"Comedy"},{"id":18,"name":"Drama"}]}')
 # print (a['genres'])
 
