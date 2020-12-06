@@ -105,6 +105,7 @@ for i in all_file:
     f2['revenue'] = c['revenue']
     f2['vote_average'] = c['vote_average']
     f2['adult'] = c['adult']
+    print(genrestring)
 
 
 

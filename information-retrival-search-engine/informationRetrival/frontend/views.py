@@ -13,9 +13,9 @@ from classification.classify import Classification
 from sklearn.externals import joblib
 from django.templatetags.static import static
 
-INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp'
+INDEX_FILE = '/Users/panda/Desktop/pfe/PFE/Index_tmp'
 WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
-CLASSIFICATION_PATH = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/classification'
+CLASSIFICATION_PATH = '/Users/panda/Desktop/pfe/PFE/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text'
 
 def show(request):
     if request.method == 'POST':
