@@ -21,7 +21,7 @@ def unicode_convert(input):
     else:
         return input
 
-BASE_PATH="../../../trial/movies/movies" # json文件地址
+BASE_PATH="/Users/panda/Desktop/movie_1202" # json文件地址
 FILEPATH="../../../Index_tmp" # whoosh index索引地址
 #Schema for Movie data
 #Stored= True corresponds to all items that require to be returned with the search result
@@ -32,6 +32,8 @@ schema = Schema(overview=TEXT(analyzer=StemmingAnalyzer(), spelling=True, stored
                 genres=TEXT(analyzer=StemmingAnalyzer(), spelling=True, stored=True),
                 runtime=STORED,
                 poster_path=STORED,
+                actorUrl=STORED,
+                imageUrl=STORED,
                 imdb_id=ID(stored=True),
                 popularity=NUMERIC(float,bits=64, stored=True),
                 revenue=NUMERIC(float,bits=64, stored=True),
@@ -96,17 +98,20 @@ for i in all_file:
     f2['title'] = c['title']
     f2['runtime'] = c['runtime']
     f2['poster_path'] = c['poster_path']
+    f2['actorUrl'] = c['actorUrl']
+    f2['imageUrl'] = c['imageUrl']
     f2['imdb_id'] = c['imdb_id']
     f2['popularity'] = c['popularity']
     f2['revenue'] = c['revenue']
     f2['vote_average'] = c['vote_average']
     f2['adult'] = c['adult']
+    print(genrestring)
 
 
 
     #print ("##################################################################################")
     writer.add_document(overview=unicode(f2['overview']), tagline=unicode(f2['tagline']),title=unicode(f2['title']), production_companies=unicode(prodstring),
-                    genres=unicode(genrestring),runtime=unicode(f2['runtime']), poster_path=unicode(f2['poster_path']),imdb_id=unicode(f2['imdb_id']),popularity=unicode(f2['popularity']),
+                    genres=unicode(genrestring),runtime=unicode(f2['runtime']), poster_path=unicode(f2['poster_path']), actorUrl=unicode(f2['actorUrl']), imageUrl=unicode(f2['imageUrl']),imdb_id=unicode(f2['imdb_id']),popularity=unicode(f2['popularity']),
                     revenue=unicode(f2['revenue']), vote_average=unicode(f2['vote_average']), adult=unicode(f2['adult']), release_date=unicode(rdate))
 
 #commit writer

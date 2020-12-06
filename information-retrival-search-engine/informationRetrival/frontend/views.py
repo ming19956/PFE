@@ -55,11 +55,8 @@ def index(request):
                     rating_q = QRY.NumericRange("vote_average",int(rating.split(",")[0]), int(rating.split(",")[1]))
 
                     if len(genre_list)>0:
-                        genres_q1= QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
-                        # genres_q2 = QRY.Or([QRY.Term(u"genres", unicode(x.capitalize())) for x in genre_list])
-                        # genres_q= QRY.Or(genres_q1,genres_q2)
-                        combi_q = QRY.And([rating_q, genres_q1])
-                        combi = QRY.Regex(u"genres",unicode("[.]*science"))
+                        genres_q=QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
+                        combi_q = QRY.And([rating_q, genres_q])
                         filter_q = QRY.Require(date_q, combi_q)
                     else:
                         filter_q = QRY.Require(date_q, rating_q)
