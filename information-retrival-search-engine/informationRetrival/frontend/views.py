@@ -33,18 +33,19 @@ def show(request):
 
 def index(request):
     if request.method == 'GET':
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            search_field = form.cleaned_data['search_field']
-            query = form.cleaned_data['search_text']
-            rating = request.GET.get("rating")
-            year = request.GET.get("year")
 
-            genre_list = request.GET.getlist('multi_genre')
+        search_list = request.GET.getlist("search")
+        query = request.GET.get("search_text")
 
+        if query is not None:
 
+            search_field = search_list
+            # query = request.GET.get("sear_text")
             query = query.replace('+', ' AND ').replace('-', ' NOT ')
 
+            rating = request.GET.get("rating")
+            year = request.GET.get("year")
+            genre_list = request.GET.getlist('multi_genre')
             filter_q = None
             # TODO: Change Directory here
             ix = i.open_dir(INDEX_FILE)
@@ -63,38 +64,35 @@ def index(request):
                         filter_q = QRY.Require(date_q, rating_q)
 
 
-                    print(filter_q)
-
                 else:
                     year = "1900,2020"
-                    rating = "-1,10"
+                    rating = "0,10"
 
                 try:
                     qry = parser.parse(query)
 
                 except:
                     qry = None
-                    return render(request, 'frontend/index.html', {'error': True, 'message':"Query is null!", 'form':form})
+                    return render(request, 'frontend/index.html', {'error': True, 'message':"Query is null!"})
                 if qry is not None:
                     searcher = ix.searcher(weighting=scoring.TF_IDF())
                     corrected = searcher.correct_query(qry, query)
                     if corrected.query != qry:
-                        return render(request, 'frontend/index.html', {'search_field': search_field, 'correction': True, 'suggested': corrected.string, 'form': form})
+                        return render(request, 'frontend/index.html', {'search_field': search_field, 'correction': True, 'suggested': corrected.string, 'search_text':query})
                     print(qry,filter_q)
                     hits = searcher.search(qry, filter=filter_q, limit=None)
                     print(hits)
                     elapsed_time = time.time() - start_time
                     elapsed_time = "{0:.3f}".format(elapsed_time)
-                    return render(request, 'frontend/index.html', {'search_field': search_field, 'search_text': form.cleaned_data['search_text'],
-                                                                   'error': False, 'hits': hits, 'form':form, 'elapsed': elapsed_time,
-                                                                   'number': len(hits), 'year': year, 'rating': rating, 'multi_genre': genre_list})
+                    print(query,search_list)
+                    return render(request, 'frontend/index.html', {'search': search_list,'error': False, 'hits': hits, 'search_text': query, 'elapsed': elapsed_time,
+                                                                   'number': len(hits), 'year': year, 'rating': rating})
                 else:
-                    return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'form':form})
+                    return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'search_text':query})
             else:
-                return render(request, 'frontend/index.html', {'error': True, 'message':'oops', 'form':form})
+                return render(request, 'frontend/ndex.html', {'error': True, 'message':'oops', 'search_text':query})
         else:
-            form = SearchForm()
-            return render(request, 'frontend/index.html', {'form': form})
+            return render(request, 'frontend/index.html', {'search_text':""})
 
 
 def classification(request):
@@ -131,7 +129,6 @@ def crawl(request):
         qry = parser.parse(date_now.strftime("%Y-%m-%d"))
         searcher = ix.searcher()
         hits = searcher.search(qry, limit=1)
-        print (len(hits))
         if (len(hits)==0):
         # send new records directory to the indexing function to add them to the index
             total_records = crawl_and_update(date_now, WRITE_FILE, INDEX_FILE)
