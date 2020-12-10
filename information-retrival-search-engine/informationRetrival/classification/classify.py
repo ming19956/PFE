@@ -19,7 +19,8 @@ from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.metrics import confusion_matrix
-from sklearn.externals import joblib
+#from sklearn.externals import joblib
+import joblib
 from sklearn import feature_extraction
 from pymongo import MongoClient
 from collections import Counter
