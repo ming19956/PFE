@@ -11,7 +11,7 @@ from datetime import datetime
 from indexing.crawl import crawl_and_update
 from classification.classify import Classification
 from numpy import unicode
-from sklearn.externals import joblib
+import joblib
 from django.templatetags.static import static
 
 INDEX_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/Index_tmp'
