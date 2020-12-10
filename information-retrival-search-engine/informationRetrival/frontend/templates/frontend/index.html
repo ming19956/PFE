@@ -4,7 +4,15 @@
   <div class="main-search">
     <h1>Discover A Movie</h1>
     <form action="/?">
-        {{ form }}
+      {% csrf_token %}
+      <label for="title"> Movie Title:</label>
+      <input id="title" type="checkbox" value="title" name="search" checked="checked"/>
+      <label for="overview">Movie Overview: </label>
+      <input id="overview" type="checkbox" value="overview" name="search" checked="checked"/>
+      <label for="actor">Movie Actor: </label>
+      <input id="actor" type="checkbox" value="actor" name="search" checked="checked"/>
+      <br>
+      <input id="search_text" type="text" name="search_text" value="{{search_text}}">
         <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Search</button>
     </form>
   </div>
@@ -28,10 +36,10 @@
   </div>
   <div class="row">
   <div class="search-filters col-lg-3">
-    <form action="">
+    <form action="/?">
       <input type="hidden" value="{{ search_text }}" name="search_text">
-      {% for field in search_field %}
-      <input type="hidden" value="{{ field }}" name="search_field">
+      {% for field in search %}
+      <input type="hidden" value="{{ field }}" name="search">
       {% endfor %}
 
       <label for="year-slider">Filter by year interval:</label><br/>
@@ -70,20 +78,18 @@
         <label for="Thriller">Thriller </label>
         <input id="Crime" type="checkbox" value="Crime" name="multi_genre" />
         <label for="Crime">Crime </label>
+          <br/>
         <input id="Romance" type="checkbox" value="Romance" name="multi_genre" />
         <label for="Romance">Romance</label>
         <input id="History" type="checkbox" value="History" name="multi_genre" />
         <label for="History">History</label>
-           <br/>
+
 <!--        <input id="Others" type="checkbox" value="Others" name="multi_genre" />-->
 <!--        <label for="Others">Others</label>-->
       </div>
       <br/>
       <br/>
       <div>
-        [{{ year }}]
-        [{{ rating }}]
-        [{{multi_genre}}]
       </div>
       <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Refine </button>
     </form>
