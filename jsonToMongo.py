@@ -38,7 +38,7 @@ def write_database(path, file):
 all_file = os.listdir(BASE_PATH)
 a = 0
 for file in all_file:
-    if a > 500:
+    if a > 6000:
         break
     a += 1
     write_database(BASE_PATH, file)

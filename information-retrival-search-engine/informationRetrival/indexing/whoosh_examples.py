@@ -21,9 +21,9 @@ def unicode_convert(input):
         return input.encode('utf-8')
     else:
         return input
-
-BASE_PATH="/Users/liujiazhen/Documents/2020-2021/PFE/data/movie_1202" # json文件地址
-FILEPATH="/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp"
+BASE_PATH="/Users/yma/Documents/python/machinelearning/movie/trial/movies/movies/" # json文件地址
+#BASE_PATH="../../../trial/movies/movies" # json文件地址
+FILEPATH="../../../Index_tmp_test" # whoosh index索引地址
 #Schema for Movie data
 #Stored= True corresponds to all items that require to be returned with the search result
 schema = Schema(overview=TEXT(analyzer=StemmingAnalyzer(), spelling=True, stored=True),
