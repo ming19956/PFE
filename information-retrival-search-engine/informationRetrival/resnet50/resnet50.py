@@ -28,7 +28,7 @@ def cosine_similarity(ratings):
 def main():
     y_test = []
     x_test = []
-    FILE_PATH = "C:/Users/syrin/Desktop/MoviesDataBase/movie_1202"
+    FILE_PATH = "/Users/panda/Desktop/movie_1202"
     IMAGE_BASE_PATH = "https://image.tmdb.org/t/p/w500"
     for movie in os.listdir(FILE_PATH):
         if movie.split(".")[1] != "json":
@@ -63,7 +63,7 @@ def main():
 
     features_compress = features.reshape(len(y_test), 7 * 7 * 512)
 
-    image_sample = Image.open("C:/Users/syrin/Desktop/Test_image/test_image.jpg")
+    image_sample = Image.open("/Users/panda/Desktop/test_image/test.jpg")
     imageS = image_sample.crop()
     thisImage = imageS.resize((224, 224))
     my_image = image.img_to_array(thisImage)
