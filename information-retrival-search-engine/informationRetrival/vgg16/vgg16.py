@@ -1,7 +1,9 @@
-import cv2
+#import cv2
+
 from keras.applications.vgg16 import VGG16
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input, decode_predictions
+
 import numpy as np
 import os
 import sys
@@ -25,9 +27,10 @@ def cosine_similarity(ratings):
 
 def main():
     # 自 images 目錄找出所有 JPEG 檔案
+
     y_test = []
     x_test = []
-    FILE_PATH = "/Users/panda/Desktop/movie_1202"
+    FILE_PATH = "C:/Users/syrin/Desktop/MoviesDataBase/movie_1202"
     IMAGE_BASE_PATH = "https://image.tmdb.org/t/p/w500"
     # flag = 0
     for movie in os.listdir(FILE_PATH):
@@ -40,7 +43,7 @@ def main():
             continue
         movie_id = movie.split('_')[1].split('.')[0]
         fr = open(FILE_PATH + "/" + movie)
-        # print(movie)
+        #print(movie)
         # print(movie_id)
         movie_model = json.load(fr)
         fr.close()
@@ -88,7 +91,7 @@ def main():
 
     # 萃取特徵
     features = model.predict(x_test)
-    # print(np.shape(features))
+     # print(np.shape(features))
     # 計算相似矩陣
     features_compress = features.reshape(len(y_test), 7 * 7 * 512)
     # print(np.shape(features_compress))
@@ -96,7 +99,7 @@ def main():
 
 
     # 取样本
-    image_sample = Image.open("/Users/panda/Desktop/test_image/test.jpg")
+    image_sample = Image.open("C:/Users/syrin/Desktop/Test/image.jpg")
     imageS = image_sample.crop()
     thisImage = imageS.resize((224, 224))
     my_image = image.img_to_array(thisImage)
@@ -128,8 +131,8 @@ def main():
     # 取得最相似的前2名序號
     recommend = [y_test[i] for i in top]
     print(recommend)
-    # print(sim)
+    #print(sim)
 
 
-if __name__ == "__main__":
-    main()
+    if __name__ == "__main__":
+        main()
