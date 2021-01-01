@@ -4,9 +4,39 @@ import sys
 import importlib
 import pandas as pd
 from bert_serving.client import BertClient
+import h5py
+import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 importlib.reload(sys)
 
+def cosine_similarity(ratings):
+    sim = ratings.dot(ratings.T)
+    if not isinstance(sim, np.ndarray):
+        sim = sim.toarray()
+    norms = np.array([np.sqrt(np.diagonal(sim))])
+    return (sim / norms / norms.T)
+
+def getVector():
+    open_file = h5py.File(
+        '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/vector.h5',
+        'r')
+    vector = open_file['vector'][:]
+    open_file.close()
+    return vector
+
+def getTitleCheck():
+    a = np.load('/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/title_check.npy', allow_pickle= True)
+    return a.item()
+
+def getMostSimilar(vectorAll, vectorSearch):
+    vectorCos = np.append(vectorAll, vectorSearch, axis = 0)
+    res = cosine_similarity(vectorCos)
+    print(-res[-1,:])
+    top = np.argsort(-res[-1, :], axis=0)[1:30]
+    y = getTitleCheck()
+    print(top)
+    recommend = [y[i-1] for i in top]
+    return recommend
 
 
 class bert(object):
@@ -20,6 +50,8 @@ class bert(object):
     collection = db["Movie"]
     label = []
     over = []
+    vector = []
+    bc = BertClient(check_length=False)
     def __init__(self):
         pass
 
@@ -43,8 +75,32 @@ class bert(object):
                 self.over.append(data['content'][i]['overview'])
         return self.label, self.over
 
+    def saveVector(self): ## don't use, just use it in colab to get the vector
+        save_file = h5py.File('../test.h5', 'w')
+        save_file.create_dataset('test', self.vector)
+        save_file.close()
+
+    def readvector(self):
+        open_file = h5py.File('/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/vector.h5', 'r')
+        self.vector = open_file['vector'][:]
+        open_file.close()
+        return self.vector
+
+    def getSearchVector(self, search_text):
+        tmp = []
+        tmp.append(search_text)
+        matrix = self.bc.encode(tmp)
+        return matrix
+
+
+
 a = bert()
-label, over = a.getInfo()
-bc = BertClient(check_length=False)
-matrix = bc.encode(over)
-print(type(matrix))
+#label, over = a.getInfo()
+#bc = BertClient(check_length=False)
+over = 'Avatar'
+matrix = a.getSearchVector(over)
+all_v = getVector()
+print(np.shape(all_v))
+print(np.shape(matrix))
+b = getMostSimilar(all_v, matrix)
+print(b)
