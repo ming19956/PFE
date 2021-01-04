@@ -1,9 +1,7 @@
 #import cv2
-
 from keras.applications.vgg16 import VGG16
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input, decode_predictions
-
 import numpy as np
 import os
 import sys
@@ -12,9 +10,11 @@ from PIL import Image
 import requests
 from io import BytesIO
 import urllib3
+import h5py
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# y_test = []
 
 # 計算相似矩陣
 def cosine_similarity(ratings):
@@ -24,13 +24,67 @@ def cosine_similarity(ratings):
     norms = np.array([np.sqrt(np.diagonal(sim))])
     return (sim / norms / norms.T)
 
+def saveVector(vector): ## don't use, just use it in colab to get the vector
+    save_file = h5py.File('../test.h5', 'w')
+    save_file.create_dataset('test', data=vector)
+    save_file.close()
+
+def readvector():
+    open_file = h5py.File('/Users/panda/Desktop/pfe/PFE/information-retrival-search-engine/informationRetrival/test.h5', 'r')
+    vector = open_file['test'][:]
+    open_file.close()
+    return vector
+
+def getTitleCheck():
+    a = np.load('/Users/panda/Desktop/pfe/PFE/information-retrival-search-engine/informationRetrival/vgg16/title.npy', allow_pickle= True)
+    return a
+
+def compare():
+    # y_test = []
+    model = VGG16(weights='imagenet', include_top=False)
+    # 取样本
+    image_sample = Image.open("/Users/panda/Desktop/test_image/test.jpg")
+    imageS = image_sample.crop()
+    thisImage = imageS.resize((224, 224))
+    my_image = image.img_to_array(thisImage)
+    my_x = np.expand_dims(my_image, axis=0)
+
+    my_x = preprocess_input(my_x)
+
+    my_features = model.predict(my_x)
+
+    my_features_compress = my_features.reshape(1, 7 * 7 * 512)
+
+    # features_compress.append(my_features_compress)
+    features_compress = readvector()
+
+    # print(np.shape(features_compress))
+    # print(np.shape(my_features_compress))
+    new_features = np.append(features_compress, my_features_compress, axis=0)
+    # print(np.shape(new_features))
+    # exit(0)
+    sim = cosine_similarity(new_features)
+    # print("sim:", np.shape(sim))
+
+    # # 依命令行參數，取1個樣本測試測試
+    # inputNo = int(sys.argv[1])  # tiger, np.random.randint(0,len(y_test),1)[0]
+    # sample = y_test[inputNo]
+    # print(sample)
+    top = np.argsort(-sim[-1, :], axis=0)[1:3]
+
+    # 取得最相似的前2名序號
+    y_test = getTitleCheck()
+    recommend = [y_test[i] for i in top]
+    print(recommend)
+    # print(sim)
+
 
 def main():
     # 自 images 目錄找出所有 JPEG 檔案
 
     y_test = []
     x_test = []
-    FILE_PATH = "C:/Users/syrin/Desktop/MoviesDataBase/movie_1202"
+    FILE_PATH = "/Users/panda/Desktop/movie_1202"
     IMAGE_BASE_PATH = "https://image.tmdb.org/t/p/w500"
     # flag = 0
     for movie in os.listdir(FILE_PATH):
@@ -86,6 +140,8 @@ def main():
     # 轉成 VGG 的 input 格式
     x_test = preprocess_input(x_test)
 
+    np.save("title.npy", y_test)
+
     # include_top=False，表示會載入 VGG16 的模型，不包括加在最後3層的卷積層，通常是取得 Features (1,7,7,512)
     model = VGG16(weights='imagenet', include_top=False)
 
@@ -96,43 +152,48 @@ def main():
     features_compress = features.reshape(len(y_test), 7 * 7 * 512)
     # print(np.shape(features_compress))
     # sim = cosine_similarity(features_compress)
+    saveVector(features_compress)
+
+    compare()
 
 
-    # 取样本
-    image_sample = Image.open("C:/Users/syrin/Desktop/Test/image.jpg")
-    imageS = image_sample.crop()
-    thisImage = imageS.resize((224, 224))
-    my_image = image.img_to_array(thisImage)
-    my_x = np.expand_dims(my_image, axis=0)
+    # # 取样本
+    # image_sample = Image.open("/Users/panda/Desktop/test_image/test.jpg")
+    # imageS = image_sample.crop()
+    # thisImage = imageS.resize((224, 224))
+    # my_image = image.img_to_array(thisImage)
+    # my_x = np.expand_dims(my_image, axis=0)
+    #
+    # my_x = preprocess_input(my_x)
+    #
+    # my_features = model.predict(my_x)
+    #
+    # my_features_compress = my_features.reshape(1, 7 * 7 * 512)
+    #
+    # # features_compress.append(my_features_compress)
+    #
+    # # print(np.shape(features_compress))
+    # # print(np.shape(my_features_compress))
+    # new_features = np.append(features_compress, my_features_compress, axis=0)
+    # # print(np.shape(new_features))
+    # # exit(0)
+    # sim = cosine_similarity(new_features)
+    # # print("sim:", np.shape(sim))
+    #
+    #
+    # # # 依命令行參數，取1個樣本測試測試
+    # # inputNo = int(sys.argv[1])  # tiger, np.random.randint(0,len(y_test),1)[0]
+    # # sample = y_test[inputNo]
+    # # print(sample)
+    # top = np.argsort(-sim[-1,:], axis=0)[1:3]
+    #
+    # # 取得最相似的前2名序號
+    # recommend = [y_test[i] for i in top]
+    # print(recommend)
+    # #print(sim)
 
-    my_x = preprocess_input(my_x)
-
-    my_features = model.predict(my_x)
-
-    my_features_compress = my_features.reshape(1, 7 * 7 * 512)
-
-    # features_compress.append(my_features_compress)
-
-    # print(np.shape(features_compress))
-    # print(np.shape(my_features_compress))
-    new_features = np.append(features_compress, my_features_compress, axis=0)
-    # print(np.shape(new_features))
-    # exit(0)
-    sim = cosine_similarity(new_features)
-    # print("sim:", np.shape(sim))
 
 
-    # # 依命令行參數，取1個樣本測試測試
-    # inputNo = int(sys.argv[1])  # tiger, np.random.randint(0,len(y_test),1)[0]
-    # sample = y_test[inputNo]
-    # print(sample)
-    top = np.argsort(-sim[-1,:], axis=0)[1:3]
 
-    # 取得最相似的前2名序號
-    recommend = [y_test[i] for i in top]
-    print(recommend)
-    #print(sim)
-
-
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
