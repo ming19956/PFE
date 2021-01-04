@@ -28,6 +28,14 @@ def getTitleCheck():
     a = np.load('/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/title_check.npy', allow_pickle= True)
     return a.item()
 
+def creatSearchVector(text):
+    a = bert()
+    # label, over = a.getInfo()
+    # bc = BertClient(check_length=False)
+    over = text
+    matrix = a.getSearchVector(over)
+    return matrix
+
 def getMostSimilar(vectorAll, vectorSearch):
     vectorCos = np.append(vectorAll, vectorSearch, axis = 0)
     res = cosine_similarity(vectorCos)
@@ -37,6 +45,16 @@ def getMostSimilar(vectorAll, vectorSearch):
     print(top)
     recommend = [y[i-1] for i in top]
     return recommend
+
+## 直接调用这个函数，可以直接返回id
+## just use this
+def todo(text):
+    vectorSearch = creatSearchVector(text)
+    vectorAll = getVector()
+    res = getMostSimilar(vectorAll, vectorSearch)
+    return res
+
+
 
 
 class bert(object):
