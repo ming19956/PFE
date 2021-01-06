@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import SearchForm, ClassifyForm
+from .forms import SearchForm, ClassifyForm, UploadFileForm
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh import index as i
 from whoosh import scoring
@@ -11,10 +11,11 @@ from datetime import datetime
 from indexing.crawl import crawl_and_update
 from classification.classify import Classification
 from numpy import unicode
+from .vgg16 import compare
 import joblib
 from django.templatetags.static import static
 
-INDEX_FILE = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/Index_tmp'
+INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp'
 WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
 CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
 
@@ -90,7 +91,7 @@ def index(request):
                 else:
                     return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'search_text':query})
             else:
-                return render(request, 'frontend/ndex.html', {'error': True, 'message':'oops', 'search_text':query})
+                return render(request, 'frontend/index.html', {'error': True, 'message':'oops', 'search_text':query})
         else:
             return render(request, 'frontend/index.html', {'search_text':""})
 
@@ -135,3 +136,35 @@ def crawl(request):
         else:
             total_records = "Already up-to-date"
         return render(request, 'frontend/crawl.html', {'total_records': total_records, 'form': form})
+
+
+
+
+
+
+def handleImg(request):
+    year = "1900,2020"
+    rating = "0,10"
+
+    start_time = time.time()
+    form = UploadFileForm(request.POST, request.FILES)
+    print(request.FILES)
+
+    file_obj = request.FILES.get('upload_picture')
+    with open('frontend/static/frontend/images/temp.jpg', 'wb+') as destination:
+        destination.write(file_obj.read())
+    res = compare()
+
+    ix = i.open_dir(INDEX_FILE)
+    searcher = ix.searcher(weighting=scoring.TF_IDF())
+
+    res_q = QRY.Or([QRY.Term(u"movie_id", unicode(x.lower())) for x in res])
+
+    # parser = MultifieldParser(search_field, schema=ix.schema)
+
+
+    hits = searcher.search(res_q, filter=None, limit=None)
+    elapsed_time = time.time() - start_time
+    return render(request, 'frontend/index.html', {'error': False, 'hits': hits, 'number': len(hits),'search_text':'' , 'elapsed': elapsed_time,'year': year, 'rating': rating})
+
+

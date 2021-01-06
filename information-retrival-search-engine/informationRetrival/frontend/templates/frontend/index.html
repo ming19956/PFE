@@ -1,6 +1,7 @@
 {% extends "frontend/base.html" %}
 {% load static %}
 {% block content %}
+  <link rel="stylesheet" href="../../static/frontend/css/base.css" />
   <div class="main-search">
     <h1>Discover A Movie</h1>
     <form action="/?">
@@ -13,9 +14,21 @@
       <input id="actor" type="checkbox" value="actor" name="search" checked="checked"/>
       <br>
       <input id="search_text" type="text" name="search_text" value="{{search_text}}">
-        <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Search</button>
+      <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Search</button>
     </form>
+    <form action="/handle_img?" method="post" class="image_search" enctype="multipart/form-data">
+      <label for="pic_box">Choose a file</label>
+
+      <div class="pic_search" style="display: none" >
+
+      <input id="pic_box" type="file" name="upload_picture">
+      </div>
+      <button class="btn btn-default" type="submit">Submit</button>
+      {% csrf_token %}
+    </form>
+
   </div>
+
 
   {% if error %}
   <div class="error-block">
@@ -55,7 +68,7 @@
       <label for="rating-slider">Filter by Rating: </label><br/>
       <b>0</b>
       <input id="rating-slider" type="text" class="span2" name="rating" value=""
-       data-slider-min="0" data-slider-max="10" data-slider-step="1"
+       data-slider-min="1" data-slider-max="10" data-slider-step="1"
        data-slider-value="[{{ rating }}]"/>
       <b>10</b>
       <br/>
