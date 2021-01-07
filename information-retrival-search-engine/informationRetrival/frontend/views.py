@@ -12,6 +12,7 @@ from indexing.crawl import crawl_and_update
 from classification.classify import Classification
 from numpy import unicode
 from .vgg16 import compare
+from  classification.bert import todo
 import joblib
 from django.templatetags.static import static
 
@@ -33,16 +34,28 @@ def show(request):
         return render(request, 'frontend/show.html', {'overview': overview, 'title': title, 'poster_path': poster_path, 'recommendations': recoms})
 
 def index(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
 
-        search_list = request.GET.getlist("search")
-        query = request.GET.get("search_text")
+        search_list = request.POST.getlist("search")
+        query = request.POST.get("search_text")
+        file_obj = request.FILES.get('upload_picture')
+        if file_obj is not None:
+            with open('frontend/static/frontend/images/temp.jpg', 'wb+') as destination:
+                destination.write(file_obj.read())
+            res = compare()
+
+            # ix = i.open_dir(INDEX_FILE)
+            # searcher = ix.searcher(weighting=scoring.TF_IDF())
 
         if query is not None:
+
 
             search_field = search_list
             # query = request.GET.get("sear_text")
             query = query.replace('+', ' AND ').replace('-', ' NOT ')
+
+            res = todo(query)
+            print(res)
 
             rating = request.GET.get("rating")
             year = request.GET.get("year")
@@ -94,6 +107,8 @@ def index(request):
                 return render(request, 'frontend/index.html', {'error': True, 'message':'oops', 'search_text':query})
         else:
             return render(request, 'frontend/index.html', {'search_text':""})
+    else:
+        return render(request, 'frontend/index.html', {'search_text': ""})
 
 
 def classification(request):

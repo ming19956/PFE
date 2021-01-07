@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="../../static/frontend/css/base.css" />
   <div class="main-search">
     <h1>Discover A Movie</h1>
-    <form action="/?">
+    <form action="/?" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="title"> Movie Title:</label>
       <input id="title" type="checkbox" value="title" name="search" checked="checked"/>
@@ -14,6 +14,15 @@
       <input id="actor" type="checkbox" value="actor" name="search" checked="checked"/>
       <br>
       <input id="search_text" type="text" name="search_text" value="{{search_text}}">
+      <br>
+      <label for="pic_box">Choose a file</label>
+
+      <div class="pic_search" style="display: none" >
+
+      <input id="img_box" type="file" name="upload_picture">
+
+      </div>
+      <br>
       <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Search</button>
     </form>
     <form action="/handle_img?" method="post" class="image_search" enctype="multipart/form-data">
