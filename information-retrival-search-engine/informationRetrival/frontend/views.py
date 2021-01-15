@@ -20,6 +20,8 @@ INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp'
 WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
 CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
 
+HITS = [1,2,3]
+
 def show(request):
     if request.method == 'POST':
         overview = request.POST.get('overview')
@@ -36,80 +38,122 @@ def show(request):
 def index(request):
     if request.method == 'POST':
 
+
         search_list = request.POST.getlist("search")
         query = request.POST.get("search_text")
-        file_obj = request.FILES.get('upload_picture')
-        if file_obj is not None:
+        file_obj = request.FILES.get('uploadPicture')
+        print(file_obj)
+        print(query)
+        res = []
+        start_time = time.time()
+        if file_obj is not None :
             with open('frontend/static/frontend/images/temp.jpg', 'wb+') as destination:
                 destination.write(file_obj.read())
-            res = compare()
+            res = res+compare()
 
-            # ix = i.open_dir(INDEX_FILE)
-            # searcher = ix.searcher(weighting=scoring.TF_IDF())
-
-        if query is not None:
-
-
+        if query is not None and query is not '':
             search_field = search_list
-            # query = request.GET.get("sear_text")
             query = query.replace('+', ' AND ').replace('-', ' NOT ')
 
-            res = todo(query)
+            res = res+todo(query)
             print(res)
 
-            rating = request.GET.get("rating")
-            year = request.GET.get("year")
-            genre_list = request.GET.getlist('multi_genre')
-            filter_q = None
-            # TODO: Change Directory here
+        if len(res) > 0  :
+
+            year = "1900,2020"
+            rating = "0,10"
             ix = i.open_dir(INDEX_FILE)
-            start_time = time.time()
-            if query is not None and query != u"":
-                parser = MultifieldParser(search_field, schema=ix.schema)
-                if year is not None:
-                    date_q = QRY.DateRange("release_date", datetime.strptime(year.split(",")[0], "%Y"), datetime.strptime(year.split(",")[1], "%Y"))
-                    rating_q = QRY.NumericRange("vote_average",int(rating.split(",")[0]), int(rating.split(",")[1]))
+            searcher = ix.searcher(weighting=scoring.TF_IDF())
+            res_q = QRY.Or([QRY.Term(u"movie_id", unicode(x)) for x in res])
+            print(res_q)
+            hits= searcher.search(res_q, filter=None, limit=None)
+            elapsed_time = time.time() - start_time
+            return render(request, 'frontend/index.html',
+                          {'search': search_list, 'error': False, 'hits': hits, 'search_text': query,
+                           'elapsed': elapsed_time, 'number': len(hits), 'year': year, 'rating': rating, 'results':res})
 
-                    if len(genre_list)>0:
-                        genres_q=QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
-                        combi_q = QRY.And([rating_q, genres_q])
-                        filter_q = QRY.Require(date_q, combi_q)
-                    else:
-                        filter_q = QRY.Require(date_q, rating_q)
-
-
-                else:
-                    year = "1900,2020"
-                    rating = "0,10"
-
-                try:
-                    qry = parser.parse(query)
-
-                except:
-                    qry = None
-                    return render(request, 'frontend/index.html', {'error': True, 'message':"Query is null!"})
-                if qry is not None:
-                    searcher = ix.searcher(weighting=scoring.TF_IDF())
-                    corrected = searcher.correct_query(qry, query)
-                    if corrected.query != qry:
-                        return render(request, 'frontend/index.html', {'search_field': search_field, 'correction': True, 'suggested': corrected.string, 'search_text':query})
-                    print(qry,filter_q)
-                    hits = searcher.search(qry, filter=filter_q, limit=None)
-                    print(hits)
-                    elapsed_time = time.time() - start_time
-                    elapsed_time = "{0:.3f}".format(elapsed_time)
-                    print(query,search_list)
-                    return render(request, 'frontend/index.html', {'search': search_list,'error': False, 'hits': hits, 'search_text': query, 'elapsed': elapsed_time,
-                                                                   'number': len(hits), 'year': year, 'rating': rating})
-                else:
-                    return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'search_text':query})
-            else:
-                return render(request, 'frontend/index.html', {'error': True, 'message':'oops', 'search_text':query})
-        else:
-            return render(request, 'frontend/index.html', {'search_text':""})
     else:
         return render(request, 'frontend/index.html', {'search_text': ""})
 
+
+def filter(request):
+    res = request.GET.getlist("result")
+    print(res)
+    res_q = QRY.Or([QRY.Term(u"movie_id", unicode(x)) for x in res])
+    rating = request.GET.get("rating")
+    year = request.GET.get("year")
+    query = request.GET.get("search_text")
+    genre_list = request.GET.getlist('multi_genre')
+    date_q = QRY.DateRange("release_date", datetime.strptime(year.split(",")[0], "%Y"),datetime.strptime(year.split(",")[1], "%Y"))
+    rating_q = QRY.NumericRange("vote_average",int(rating.split(",")[0]), int(rating.split(",")[1]))
+    filter_q = QRY.And([date_q, rating_q])
+    filter_q = QRY.And([filter_q,res_q])
+    if len(genre_list) > 0:
+        genres_q=QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
+        filter_q = QRY.And([filter_q, genres_q])
+
+    ix = i.open_dir(INDEX_FILE)
+    searcher = ix.searcher(weighting=scoring.TF_IDF())
+    print(filter_q)
+    hits= searcher.search(filter_q, filter=None, limit=None)
+    return render(request, 'frontend/index.html',
+                  { 'error': False, 'hits': hits, 'search_text': query,
+                    'number': len(hits), 'year': year, 'rating': rating})
+
+
+    #         rating = request.GET.get("rating")
+    #         year = request.GET.get("year")
+    #         genre_list = request.GET.getlist('multi_genre')
+    #         filter_q = None
+    #         # TODO: Change Directory here
+    #         ix = i.open_dir(INDEX_FILE)
+    #         start_time = time.time()
+    #         if query is not None and query != u"":
+    #             parser = MultifieldParser(search_field, schema=ix.schema)
+    #             if year is not None:
+    #                 date_q = QRY.DateRange("release_date", datetime.strptime(year.split(",")[0], "%Y"), datetime.strptime(year.split(",")[1], "%Y"))
+    #                 rating_q = QRY.NumericRange("vote_average",int(rating.split(",")[0]), int(rating.split(",")[1]))
+    #
+    #                 if len(genre_list)>0:
+    #                     genres_q=QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
+    #                     combi_q = QRY.And([rating_q, genres_q])
+    #                     filter_q = QRY.Require(date_q, combi_q)
+    #                 else:
+    #                     filter_q = QRY.Require(date_q, rating_q)
+    #
+    #
+    #             else:
+    #                 year = "1900,2020"
+    #                 rating = "0,10"
+    #
+    #             try:
+    #                 qry = parser.parse(query)
+    #
+    #             except:
+    #                 qry = None
+    #                 return render(request, 'frontend/index.html', {'error': True, 'message':"Query is null!"})
+    #             if qry is not None:
+    #                 searcher = ix.searcher(weighting=scoring.TF_IDF())
+    #                 corrected = searcher.correct_query(qry, query)
+    #                 if corrected.query != qry:
+    #                     return render(request, 'frontend/index.html', {'search_field': search_field, 'correction': True, 'suggested': corrected.string, 'search_text':query})
+    #                 print(qry,filter_q)
+    #                 hits = searcher.search(qry, filter=filter_q, limit=None)
+    #                 print(hits)
+    #                 elapsed_time = time.time() - start_time
+    #                 elapsed_time = "{0:.3f}".format(elapsed_time)
+    #                 print(query,search_list)
+    #                 return render(request, 'frontend/index.html', {'search': search_list,'error': False, 'hits': hits, 'search_text': query, 'elapsed': elapsed_time,
+    #                                                                'number': len(hits), 'year': year, 'rating': rating})
+    #             else:
+    #                 return render(request, 'frontend/index.html', {'error': True, 'message':"Sorry couldn't parse", 'search_text':query})
+    #         else:
+    #             return render(request, 'frontend/index.html', {'error': True, 'message':'oops', 'search_text':query})
+    #     else:
+    #         return render(request, 'frontend/index.html', {'search_text':""})
+    # else:
+    #     return render(request, 'frontend/index.html', {'search_text': ""})
+    #
 
 def classification(request):
     results_dict = Classification(CLASSIFICATION_PATH).get_classification_results()
@@ -180,6 +224,6 @@ def handleImg(request):
 
     hits = searcher.search(res_q, filter=None, limit=None)
     elapsed_time = time.time() - start_time
-    return render(request, 'frontend/index.html', {'error': False, 'hits': hits, 'number': len(hits),'search_text':'' , 'elapsed': elapsed_time,'year': year, 'rating': rating})
+    return
 
 

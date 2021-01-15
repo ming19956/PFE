@@ -15,25 +15,14 @@
       <br>
       <input id="search_text" type="text" name="search_text" value="{{search_text}}">
       <br>
-      <label for="pic_box">Choose a file</label>
-
+      <label for="img_box">Choose a file</label>
       <div class="pic_search" style="display: none" >
 
-      <input id="img_box" type="file" name="upload_picture">
+        <input id="img_box" type="file" name="uploadPicture">
 
       </div>
       <br>
       <button class="btn btn-default" type="submit" value="Search"> <span class="glyphicon glyphicon-search"></span> Search</button>
-    </form>
-    <form action="/handle_img?" method="post" class="image_search" enctype="multipart/form-data">
-      <label for="pic_box">Choose a file</label>
-
-      <div class="pic_search" style="display: none" >
-
-      <input id="pic_box" type="file" name="upload_picture">
-      </div>
-      <button class="btn btn-default" type="submit">Submit</button>
-      {% csrf_token %}
     </form>
 
   </div>
@@ -58,11 +47,15 @@
   </div>
   <div class="row">
   <div class="search-filters col-lg-3">
-    <form action="/?">
+    <form action="/filter" method="get">
       <input type="hidden" value="{{ search_text }}" name="search_text">
       {% for field in search %}
       <input type="hidden" value="{{ field }}" name="search">
       {% endfor %}
+      {% for res in results %}
+      <input  type="hidden" value="{{res}}" name = "result">
+      {% endfor %}
+
 
       <label for="year-slider">Filter by year interval:</label><br/>
       <b>1900</b>
@@ -105,9 +98,6 @@
         <label for="Romance">Romance</label>
         <input id="History" type="checkbox" value="History" name="multi_genre" />
         <label for="History">History</label>
-
-<!--        <input id="Others" type="checkbox" value="Others" name="multi_genre" />-->
-<!--        <label for="Others">Others</label>-->
       </div>
       <br/>
       <br/>

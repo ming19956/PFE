@@ -94,6 +94,7 @@ for i in all_file:
     if rdate == '':
         rdate = u'2100-10-10'
     f2=dict()
+    f2['id'] = c['id']
     f2['overview'] = c['overview']
     f2['tagline'] = c['tagline']
     f2['title'] = c['title']
@@ -111,7 +112,7 @@ for i in all_file:
 
 
     #print ("##################################################################################")
-    writer.add_document(overview=unicode(f2['overview']), tagline=unicode(f2['tagline']),title=unicode(f2['title']), production_companies=unicode(prodstring),
+    writer.add_document(id = unicode(f2['id']),overview=unicode(f2['overview']), tagline=unicode(f2['tagline']),title=unicode(f2['title']), production_companies=unicode(prodstring),
                     genres=unicode(genrestring),runtime=unicode(f2['runtime']), poster_path=unicode(f2['poster_path']), actorUrl=unicode(f2['actorUrl']), imageUrl=unicode(f2['imageUrl']),imdb_id=unicode(f2['imdb_id']),popularity=unicode(f2['popularity']),
                     revenue=unicode(f2['revenue']), vote_average=unicode(f2['vote_average']), adult=unicode(f2['adult']), release_date=unicode(rdate))
 

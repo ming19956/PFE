@@ -7,5 +7,5 @@ urlpatterns = [
     url(r'^classify$', views.classification, name='classify'),
     url(r'^crawl', views.crawl),
     url(r'^show', views.show),
-    url(r'^handle_img',views.handleImg)
+    url(r'^filter',views.filter)
 ]
