@@ -24,7 +24,11 @@ def getVector():
     open_file.close()
     return vector
 
-def getTitleCheck():
+def getMain_info():
+    a = np.load('/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/main_info.npy', allow_pickle= True)
+    return a.item()
+
+def getTitleCheck_BERT():
     a = np.load('/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/title_check.npy', allow_pickle= True)
     return a.item()
 
@@ -36,23 +40,46 @@ def creatSearchVector(text):
     matrix = a.getSearchVector(over)
     return matrix
 
-def getMostSimilar(vectorAll, vectorSearch):
+def getMostSimilar(vectorAll, vectorSearch, search_type):
     vectorCos = np.append(vectorAll, vectorSearch, axis = 0)
     res = cosine_similarity(vectorCos)
     print(-res[-1,:])
     top = np.argsort(-res[-1, :], axis=0)[1:30]
-    y = getTitleCheck()
+    y = getTitleCheck_BERT()
+    z = getMain_info()
     print(top)
-    recommend = [y[i-1] for i in top]
+    recommend = []
+    if search_type == 1:
+        for i in top:
+            if z[y[i-1]] is 'title':
+                recommend.append(y[i-1])
+    elif search_type == 2:
+        for i in top:
+            if z[y[i-1]] is 'content':
+                recommend.append(y[i-1])
+    else:
+        recommend = [y[i-1] for i in top]
     return recommend
+
+def getMostSimilar_BERT(vectorAll, vectorSearch, search_type):
+    vectorCos = np.append(vectorAll, vectorSearch, axis = 0)
+    res = cosine_similarity(vectorCos)
+    return res
 
 ## 直接调用这个函数，可以直接返回id
 ## just use this
-def todo(text):
+## search_type :: 1 -> title | 2 -> overview | 3 -> title + overview
+def todo(text, search_type):
     vectorSearch = creatSearchVector(text)
     vectorAll = getVector()
-    res = getMostSimilar(vectorAll, vectorSearch)
+    res = getMostSimilar(vectorAll, vectorSearch, search_type)
     return res
+
+def todo_melanger(text, search_type):
+    vectorSearch = creatSearchVector(text)
+    vectorAll = getVector()
+    res = getMostSimilar_BERT(vectorAll, vectorSearch, search_type)
+    return res  # similarity
 
 
 
@@ -69,7 +96,7 @@ class bert(object):
     label = []
     over = []
     vector = []
-    bc = BertClient(check_length=False)
+    bc = BertClient(port = 8190, port_out= 8191, check_length=False)
     def __init__(self):
         pass
 

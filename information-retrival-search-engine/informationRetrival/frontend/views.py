@@ -11,7 +11,7 @@ from datetime import datetime
 from indexing.crawl import crawl_and_update
 from classification.classify import Classification
 from numpy import unicode
-from .vgg16 import compare
+from .vgg16_p import compare
 from  classification.bert import todo
 import joblib
 from django.templatetags.static import static
