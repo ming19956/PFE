@@ -7,11 +7,11 @@
     <form action="/?" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="title"> Movie Title:</label>
-      <input id="title" type="checkbox" value="title" name="search" checked="checked"/>
+      <input id="title" type="checkbox" value="0" name="search" checked="checked"/>
       <label for="overview">Movie Overview: </label>
-      <input id="overview" type="checkbox" value="overview" name="search" checked="checked"/>
+      <input id="overview" type="checkbox" value="1" name="search" checked="checked"/>
       <label for="actor">Movie Actor: </label>
-      <input id="actor" type="checkbox" value="actor" name="search" checked="checked"/>
+      <input id="actor" type="checkbox" value="2" name="search" checked="checked"/>
       <br>
       <input id="search_text" type="text" name="search_text" value="{{search_text}}">
       <br>
@@ -60,7 +60,7 @@
       <label for="year-slider">Filter by year interval:</label><br/>
       <b>1900</b>
 
-      <input id="year-slider" type="text" class="span2" style="width:70%" name="year" value=""
+      <input id="year-slider" type="text" class="span2" style="width:60%" name="year" value=""
                                               data-slider-min="1900" data-slider-max="2020" data-slider-step="2"
                                               data-slider-value="[{{ year }}]"/>
       <b>2020</b>
@@ -69,7 +69,7 @@
 
       <label for="rating-slider">Filter by Rating: </label><br/>
       <b>0</b>
-      <input id="rating-slider" type="text" class="span2" name="rating" value=""
+      <input id="rating-slider" style="width:70%" type="text" class="span2" name="rating" value=""
        data-slider-min="1" data-slider-max="10" data-slider-step="1"
        data-slider-value="[{{ rating }}]"/>
       <b>10</b>

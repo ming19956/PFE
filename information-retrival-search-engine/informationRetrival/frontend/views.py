@@ -13,14 +13,13 @@ from classification.classify import Classification
 from numpy import unicode
 from .vgg16_p import compare
 from  classification.bert import todo
+from melanger.melanger import todo_all
 import joblib
 from django.templatetags.static import static
 
 INDEX_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Index_tmp'
-WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
-CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
-
-HITS = [1,2,3]
+# WRITE_FILE = '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/Trial_2'
+# CLASSIFICATION_PATH = '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/frontend/static/frontend/text/'
 
 def show(request):
     if request.method == 'POST':
@@ -37,8 +36,6 @@ def show(request):
 
 def index(request):
     if request.method == 'POST':
-
-
         search_list = request.POST.getlist("search")
         query = request.POST.get("search_text")
         file_obj = request.FILES.get('uploadPicture')
@@ -46,31 +43,34 @@ def index(request):
         print(query)
         res = []
         start_time = time.time()
-        if file_obj is not None :
-            with open('frontend/static/frontend/images/temp.jpg', 'wb+') as destination:
-                destination.write(file_obj.read())
-            res = res+compare()
+        print(search_list)
+        res = todo_all(query,search_list)
+        print(res)
 
-        if query is not None and query is not '':
-            search_field = search_list
-            query = query.replace('+', ' AND ').replace('-', ' NOT ')
-
-            res = res+todo(query)
-            print(res)
-
-        if len(res) > 0  :
-
+        if len(res) > 0:
             year = "1900,2020"
             rating = "0,10"
             ix = i.open_dir(INDEX_FILE)
-            searcher = ix.searcher(weighting=scoring.TF_IDF())
-            res_q = QRY.Or([QRY.Term(u"movie_id", unicode(x)) for x in res])
-            print(res_q)
-            hits= searcher.search(res_q, filter=None, limit=None)
+            searcher = ix.searcher()
+            hitsList = []
+            for x in res:
+                res_q = QRY.Term(u"id", unicode(x))
+                temp_hit = searcher.search(res_q, limit=None)
+                if temp_hit:
+                    for y in temp_hit:
+                        hitsList.append(y)
+
+
+
+            # res_q = QRY.Or([QRY.Term(u"id", unicode(x)) for x in res])
+            # print(res_q)
+            # hits= searcher.search(res_q, limit=None)
+            # print(hit.id for hit in hits)
+
             elapsed_time = time.time() - start_time
             return render(request, 'frontend/index.html',
-                          {'search': search_list, 'error': False, 'hits': hits, 'search_text': query,
-                           'elapsed': elapsed_time, 'number': len(hits), 'year': year, 'rating': rating, 'results':res})
+                          {'search': search_list, 'error': False, 'hits': hitsList, 'search_text': query,
+                           'elapsed': elapsed_time, 'number': len(hitsList), 'year': year, 'rating': rating, 'results':res})
 
     else:
         return render(request, 'frontend/index.html', {'search_text': ""})
@@ -79,7 +79,6 @@ def index(request):
 def filter(request):
     res = request.GET.getlist("result")
     print(res)
-    res_q = QRY.Or([QRY.Term(u"movie_id", unicode(x)) for x in res])
     rating = request.GET.get("rating")
     year = request.GET.get("year")
     query = request.GET.get("search_text")
@@ -87,18 +86,29 @@ def filter(request):
     date_q = QRY.DateRange("release_date", datetime.strptime(year.split(",")[0], "%Y"),datetime.strptime(year.split(",")[1], "%Y"))
     rating_q = QRY.NumericRange("vote_average",int(rating.split(",")[0]), int(rating.split(",")[1]))
     filter_q = QRY.And([date_q, rating_q])
-    filter_q = QRY.And([filter_q,res_q])
     if len(genre_list) > 0:
         genres_q=QRY.Or([QRY.Term(u"genres",unicode(x.lower())) for x in genre_list])
         filter_q = QRY.And([filter_q, genres_q])
-
     ix = i.open_dir(INDEX_FILE)
     searcher = ix.searcher(weighting=scoring.TF_IDF())
+    hitsList=[]
+    for x in res:
+        res_q = QRY.Term(u"id", unicode(x))
+        filter = QRY.And([filter_q, res_q])
+        temp_hit = searcher.search(filter, filter=None, limit=None)
+        if temp_hit:
+            for y in temp_hit:
+                hitsList.append(y)
+
+
+
+
+
     print(filter_q)
-    hits= searcher.search(filter_q, filter=None, limit=None)
+
     return render(request, 'frontend/index.html',
-                  { 'error': False, 'hits': hits, 'search_text': query,
-                    'number': len(hits), 'year': year, 'rating': rating})
+                  { 'error': False, 'hits': hitsList, 'search_text': query,
+                    'number': len(hitsList), 'year': year, 'rating': rating,'results':res})
 
 
     #         rating = request.GET.get("rating")

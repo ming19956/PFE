@@ -7,7 +7,8 @@ from bert_serving.client import BertClient
 import h5py
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-importlib.reload(sys)
+
+
 
 def cosine_similarity(ratings):
     sim = ratings.dot(ratings.T)
@@ -17,19 +18,19 @@ def cosine_similarity(ratings):
     return (sim / norms / norms.T)
 
 def getVector():
-    open_file = h5py.File(
-        '/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/vector.h5',
-        'r')
+    open_file = h5py.File('/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/classification/vector.h5','r')
     vector = open_file['vector'][:]
     open_file.close()
     return vector
 
 def getMain_info():
-    a = np.load('/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/main_info.npy', allow_pickle= True)
+    a = np.load('/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/classification/main_info.npy', allow_pickle= True)
     return a.item()
 
 def getTitleCheck_BERT():
-    a = np.load('/Users/yma/Documents/python/machinelearning/info-retrival-search-engine/information-retrival-search-engine/informationRetrival/classification/title_check.npy', allow_pickle= True)
+    a = np.load(
+        '/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/classification/title_check.npy',
+        allow_pickle=True)
     return a.item()
 
 def creatSearchVector(text):
@@ -49,11 +50,11 @@ def getMostSimilar(vectorAll, vectorSearch, search_type):
     z = getMain_info()
     print(top)
     recommend = []
-    if search_type == 1:
+    if '0' in search_type:
         for i in top:
             if z[y[i-1]] is 'title':
                 recommend.append(y[i-1])
-    elif search_type == 2:
+    if '1' in search_type:
         for i in top:
             if z[y[i-1]] is 'content':
                 recommend.append(y[i-1])
@@ -61,25 +62,25 @@ def getMostSimilar(vectorAll, vectorSearch, search_type):
         recommend = [y[i-1] for i in top]
     return recommend
 
-def getMostSimilar_BERT(vectorAll, vectorSearch, search_type):
+def getMostSimilar_BERT(vectorAll, vectorSearch):
     vectorCos = np.append(vectorAll, vectorSearch, axis = 0)
     res = cosine_similarity(vectorCos)
     return res
 
 ## 直接调用这个函数，可以直接返回id
 ## just use this
-## search_type :: 1 -> title | 2 -> overview | 3 -> title + overview
+## search_type :: 0 -> title | 1 -> overview | 2 -> title + overview
 def todo(text, search_type):
     vectorSearch = creatSearchVector(text)
     vectorAll = getVector()
     res = getMostSimilar(vectorAll, vectorSearch, search_type)
     return res
 
-def todo_melanger(text, search_type):
+def todo_melanger(text):
     vectorSearch = creatSearchVector(text)
     vectorAll = getVector()
-    res = getMostSimilar_BERT(vectorAll, vectorSearch, search_type)
-    return res  # similarity
+    res = getMostSimilar_BERT(vectorAll, vectorSearch)
+    return res # similarity
 
 
 
@@ -96,7 +97,7 @@ class bert(object):
     label = []
     over = []
     vector = []
-    bc = BertClient(port = 8190, port_out= 8191, check_length=False)
+    bc = BertClient(port=8190,port_out=8191,check_length=False)
     def __init__(self):
         pass
 
@@ -139,13 +140,14 @@ class bert(object):
 
 
 
-a = bert()
-#label, over = a.getInfo()
-#bc = BertClient(check_length=False)
-over = 'Avatar'
-matrix = a.getSearchVector(over)
-all_v = getVector()
-print(np.shape(all_v))
-print(np.shape(matrix))
-b = getMostSimilar(all_v, matrix)
-print(b)
+# a = bert()
+# #label, over = a.getInfo()
+# #bc = BertClient(check_length=False)
+# over = 'Avatar'
+# matrix = a.getSearchVector(over)
+# all_v = getVector()
+# print(np.shape(all_v))
+# print(np.shape(matrix))
+# b = getMostSimilar(all_v, matrix)
+# print(b)
+print(getTitleCheck_BERT())

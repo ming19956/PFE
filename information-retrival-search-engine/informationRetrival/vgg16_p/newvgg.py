@@ -31,20 +31,20 @@ def saveVector(vector): ## don't use, just use it in colab to get the vector
     save_file.close()
 
 def readvector():
-    open_file = h5py.File('/Users/panda/Desktop/pfe/PFE/information-retrival-search-engine/informationRetrival/test.h5', 'r')
+    open_file = h5py.File('/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/vgg16_p/test.h5', 'r')
     vector = open_file['test'][:]
     open_file.close()
     return vector
 
 def getTitleCheck_VGG():
-    a = np.load('/Users/panda/Desktop/pfe/PFE/information-retrival-search-engine/informationRetrival/vgg16/title.npy', allow_pickle= True)
-    return a
+    a = np.load('/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/vgg16_p/title.npy', allow_pickle= True)
+    return a.item()
 
 def compare():
     # y_test = []
     model = VGG16(weights='imagenet', include_top=False)
     # 取样本
-    image_sample = Image.open("/Users/panda/Desktop/test_image/test.jpeg")
+    image_sample = Image.open("/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/frontend/static/frontend/images/temp.jpg")
     imageS = image_sample.crop()
     thisImage = imageS.resize((224, 224))
     my_image = image.img_to_array(thisImage)
@@ -83,7 +83,7 @@ def compare_melanger():
     # y_test = []
     model = VGG16(weights='imagenet', include_top=False)
     # 取样本
-    image_sample = Image.open("") # 此处添加修改地址
+    image_sample = Image.open("/Users/liujiazhen/Documents/2020-2021/PFE/PFE/PFE/information-retrival-search-engine/informationRetrival/frontend/static/frontend/images/temp.jpg") # 此处添加修改地址
     imageS = image_sample.crop()
     thisImage = imageS.resize((224, 224))
     my_image = image.img_to_array(thisImage)
@@ -268,5 +268,6 @@ def main():
 
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
+print(getTitleCheck_VGG())
